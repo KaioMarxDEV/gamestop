@@ -1,0 +1,34 @@
+services:
+  db:
+    container_name: database
+    image: postgres
+    restart: "no"
+    environment:
+      - POSTGRES_DB=gorm
+      - POSTGRES_USER=gorm
+      - POSTGRES_PASSWORD=gorm
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+    volumes:
+      - db-data:/etc/data
+  app:
+    container_name: api
+    build: 
+      context: .
+      target: build
+    restart: "no"
+    ports:
+      - "3333:3333"
+    volumes:
+      - .:/app/api-data
+    networks:
+      - back-tier
+
+volumes:
+  db-data:
+    driver: local
+networks:
+  back-tier:
+    driver: bridge
